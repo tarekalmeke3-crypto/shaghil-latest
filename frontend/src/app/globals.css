@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+    --color-fiery-red: #C62828;
+    --color-glossy-black: #0B0B0B;
+    --color-deep-charcoal: #1A1A1A;
+    --color-off-white: #F5F5F5;
+    --color-ash-grey: #9CA3AF;
+    --font-sans: 'Tajawal', 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--color-glossy-black);
+    color: var(--color-off-white);
+    direction: rtl;
+    font-family: var(--font-sans);
+}
