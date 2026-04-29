@@ -93,7 +93,7 @@ export default function PortfolioPage() {
                         </div>
                         <div className="bg-black rounded-lg p-4 text-center">
                             <div className="text-fiery-red text-2xl font-black">
-                                {[...new Set(completed.map((app: any) => app.task?.companies?.company_name))].size}
+                                {[...new Set(completed.map((app: any) => app.task?.companies?.company_name))].length}
                             </div>
                             <div className="text-xs text-ash-grey mt-1">شركة تعاملت معها</div>
                         </div>
