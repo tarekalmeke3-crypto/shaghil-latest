@@ -21,7 +21,6 @@ export default function PortfolioPage() {
                 return;
             }
 
-            // بيانات المتقدم
             const { data: appProfile } = await supabase
                 .from('applicant_profiles')
                 .select('*, user:user_id(first_name, last_name, email)')
@@ -34,7 +33,6 @@ export default function PortfolioPage() {
             }
             setProfile(appProfile);
 
-            // المهام المكتملة
             const { data: completedApps } = await supabase
                 .from('applications')
                 .select('*, task:tasks(title, description, required_skills, compensation, companies(company_name))')
@@ -57,6 +55,23 @@ export default function PortfolioPage() {
         );
     }
 
+    // استخراج عدد الشركات الفريد بأمان باستخدام length
+    const uniqueCompanies = [...new Set(completed
+        .map((app: any) => app.task?.companies?.company_name)
+        .filter(Boolean)
+    )].length;
+
+    // استخراج عدد المهارات الفريدة بأمان
+    const uniqueSkills = [...new Set(completed
+        .flatMap((app: any) => {
+            try {
+                return JSON.parse(app.task?.required_skills || '[]');
+            } catch {
+                return [];
+            }
+        })
+    )].length;
+
     return (
         <main className="min-h-screen bg-glossy-black text-white">
             <nav className="flex items-center justify-between px-6 py-4 border-b border-white/5">
@@ -74,7 +89,6 @@ export default function PortfolioPage() {
             </nav>
 
             <div className="max-w-4xl mx-auto p-6">
-                {/* رأس المحفظة */}
                 <div className="bg-deep-charcoal rounded-2xl p-8 border border-white/5 mb-8">
                     <h1 className="text-3xl font-bold">
                         {profile?.user?.first_name} {profile?.user?.last_name}
@@ -86,21 +100,16 @@ export default function PortfolioPage() {
                             <div className="text-xs text-ash-grey mt-1">مهمة مكتملة</div>
                         </div>
                         <div className="bg-black rounded-lg p-4 text-center">
-                            <div className="text-fiery-red text-2xl font-black">
-                                {[...new Set(completed.flatMap((app: any) => JSON.parse(app.task?.required_skills || '[]')))].length}
-                            </div>
+                            <div className="text-fiery-red text-2xl font-black">{uniqueSkills}</div>
                             <div className="text-xs text-ash-grey mt-1">مهارة مكتسبة</div>
                         </div>
                         <div className="bg-black rounded-lg p-4 text-center">
-                            <div className="text-fiery-red text-2xl font-black">
-                                {[...new Set(completed.map((app: any) => app.task?.companies?.company_name))].length}
-                            </div>
+                            <div className="text-fiery-red text-2xl font-black">{uniqueCompanies}</div>
                             <div className="text-xs text-ash-grey mt-1">شركة تعاملت معها</div>
                         </div>
                     </div>
                 </div>
 
-                {/* قائمة الإنجازات */}
                 <h2 className="text-xl font-bold mb-4">سجل الإنجازات</h2>
 
                 {completed.length === 0 ? (
